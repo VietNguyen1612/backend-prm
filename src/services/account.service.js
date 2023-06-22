@@ -6,8 +6,8 @@ class AccountService extends BaseService {
         super( accountsModel );
     }
 
-    async findAccountByUsername( username ) {
-        return await this.model.findOne( { username } ).lean();
+    async findAccountByEmail( email ) {
+        return await this.model.findOne( { email } ).lean();
     }
 }
 

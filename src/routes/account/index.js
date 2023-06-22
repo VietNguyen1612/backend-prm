@@ -10,7 +10,7 @@ const router = express.Router();
 router.get( "/", authenticate, authorize( 'restaurantOwner', 'admin' ), asyncHandler( accountController.getAllAccounts ) ); //authored
 router.post( "/register", asyncHandler( accountController.createAccount ) );
 router.post( "/login", asyncHandler( accountController.login ) );
-router.get( "/:accountId", asyncHandler( accountController.getAccount ) );
+router.get( "/:accountId", authenticate, asyncHandler( accountController.getAccount ) );
 router.delete( "/:accountId", asyncHandler( accountController.deleteAccount ) );
 router.patch( "/:accountId", asyncHandler( accountController.updateAccount ) );
 
