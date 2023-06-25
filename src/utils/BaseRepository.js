@@ -13,6 +13,21 @@ class BaseService {
     return await query.exec();
   };
   create = async ( object ) => {
+    //check if the object is ref to another model
+    switch ( this.model.modelName ) {
+      case "Restaurant":
+        object.restaurantOwnerId = object.restaurantOwnerId._id;
+        break;
+      case "Table":
+        object.restaurantId = object.restaurantId._id;
+        break;
+      case "Reservation":
+        object.restaurantId = object.restaurantId._id;
+        object.tableId = object.tableId._id;
+        break;
+      default:
+        break;
+    }
     return await this.model?.create( object );
   };
   update = async ( id, updateObj ) => {

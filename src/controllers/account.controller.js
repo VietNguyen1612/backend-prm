@@ -18,8 +18,12 @@ class AccountController {
 
     getAccount = async ( req, res, next ) => {
         try {
-            const account = await AccountService.getById( req.params.accountId );
-            res.send( account );
+            if ( req.account.id === req.params.accountId || [ 'admin', 'restaurantOwner' ].includes( req.account.role ) ) {
+                const account = await AccountService.getById( req.params.accountId );
+                res.send( account );
+            } else {
+                throw ErrorHandler( 403, 'Forbidden' );
+            }
         } catch ( error ) {
             next( error );
         }
@@ -27,22 +31,22 @@ class AccountController {
 
     createAccount = async ( req, res, next ) => {
         try {
-            console.log( req.body )
             const errors = validationResult( req );
             if ( !errors.isEmpty() ) {
                 throw ErrorHandler( 400, "Validation Error", errors.array() );
             }
-            const { username, password, role, phone, address, name } = req.body;
+            const { email, password, role, phone, address, name } = req.body;
             const hashedPassword = await hashPassword( password );
-            const account = await AccountService.create( { username, password: hashedPassword, role } );
-            // create customer or restaurant owner
-            if ( role === 'customer' ) {
-                const customer = await CustomerService.create( { phone, address, name } );
-                //create customer
-                console.log( customer )
-            } else if ( role === 'restaurantOwner' ) {
-                const restaurantOwner = await RestaurantOwnerService.create( { phone, name, address } );
-                console.log( restaurantOwner )
+            const account = await AccountService.create( { email, password: hashedPassword, role } );
+            switch ( role ) {
+                case 'customer':
+                    await CustomerService.create( { phone, address, name } );
+                    break;
+                case 'restaurantOwner':
+                    await RestaurantOwnerService.create( { phone, address, name } );
+                    break;
+                default:
+                    break;
             }
             res.send( account );
         } catch ( error ) {
@@ -79,8 +83,8 @@ class AccountController {
             if ( !errors.isEmpty() ) {
                 throw ErrorHandler( 400, "Validation Error", errors.array() );
             }
-            const { username, password } = req.body;
-            const account = await AccountService.findAccountByUsername( username );
+            const { email, password } = req.body;
+            const account = await AccountService.findAccountByEmail( email );
             if ( !account ) {
                 throw ErrorHandler( 400, "Invalid Credentials" );
             }
@@ -95,6 +99,24 @@ class AccountController {
             next( error );
         }
     };
+    forgetPassword = async ( req, res, next ) => {
+        try {
+            const errors = validationResult( req );
+            if ( !errors.isEmpty() ) {
+                throw ErrorHandler( 400, "Validation Error", errors.array() );
+            }
+            const { email } = req.body;
+            const account = await AccountService.findAccountByEmail( email );
+            if ( !account ) {
+                throw ErrorHandler( 400, "Invalid Credentials" );
+            }
+            const token = generateToken( account );
+            res.send( { token } );
+        } catch ( error ) {
+            next( error );
+        }
+    }
 }
+
 
 module.exports = new AccountController();

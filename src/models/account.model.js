@@ -6,7 +6,7 @@ const DOCUMENT_NAME = 'Account';
 const COLLECTION_NAME = 'accounts';
 
 const accountSchema = new Schema( {
-    username: { //email
+    email: {
         type: String,
         required: true,
         unique: true,
