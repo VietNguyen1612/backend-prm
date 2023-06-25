@@ -13,3 +13,5 @@ router.get( '/status/:status', TableController.getTableByStatus );
 router.post( '/', authenticate, authorize( 'admin', 'restaurantOwner' ), TableController.createTable );
 router.put( '/:tableId', authenticate, authorize( 'admin', 'restaurantOwner' ), TableController.updateTable );
 router.delete( '/:tableId', authenticate, authorize( 'admin', 'restaurantOwner' ), TableController.deleteTable );
+
+module.exports = router;

@@ -19,11 +19,11 @@ const accountSchema = new Schema( {
         enum: [ 'admin', 'customer', 'restaurantOwner' ],
         default: 'customer'
     },
-    customerId: {
+    customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer'
     },
-    restaurantOwnerId: {
+    restaurantOwner: {
         type: Schema.Types.ObjectId,
         ref: 'RestaurantOwner'
     }

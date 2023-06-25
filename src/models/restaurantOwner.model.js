@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require( "mongoose" );
 
 const DOCUMENT_NAME = "RestaurantOwner";
 const COLLECTION_NAME = "restaurantOwners";
@@ -15,7 +15,7 @@ const restaurantOwnerSchema = new mongoose.Schema(
         phone: {
             type: String,
             required: true
-        }
+        },
     },
     {
         collection: COLLECTION_NAME,
@@ -23,4 +23,4 @@ const restaurantOwnerSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model(DOCUMENT_NAME, restaurantOwnerSchema);
+module.exports = mongoose.model( DOCUMENT_NAME, restaurantOwnerSchema, COLLECTION_NAME );

@@ -5,7 +5,6 @@ class TableService extends BaseService {
     constructor () {
         super( tableModel );
     }
-
     async findTableByNumber( tableNumber ) {
         return await this.model.findOne( { tableNumber } ).lean();
     }
