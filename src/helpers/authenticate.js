@@ -51,6 +51,17 @@ const authorize = ( ...roles ) => {
         next();
     }
 };
+const isOwner = ( req, res, next ) => {
+    if ( req.user._id.toString() === req.params.accountId ) {
+        next();
+    } else if ( req.user.role === 'admin' ) {
+        next();
+    } else {
+        return res.status( 403 ).send( { message: 'You cannot view other info' } );
+    }
+};
+
 
 exports.authenticate = authenticate;
 exports.authorize = authorize;
+exports.isOwner = isOwner;

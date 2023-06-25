@@ -18,12 +18,8 @@ class AccountController {
 
     getAccount = async ( req, res, next ) => {
         try {
-            if ( req.account.id === req.params.accountId || [ 'admin', 'restaurantOwner' ].includes( req.account.role ) ) {
-                const account = await AccountService.getById( req.params.accountId );
-                res.send( account );
-            } else {
-                throw ErrorHandler( 403, 'Forbidden' );
-            }
+            const account = await AccountService.getById( req.params.accountId, [ "customer", "restaurantOwner" ] );
+            res.send( account );
         } catch ( error ) {
             next( error );
         }
@@ -37,18 +33,20 @@ class AccountController {
             }
             const { email, password, role, phone, address, name } = req.body;
             const hashedPassword = await hashPassword( password );
-            const account = await AccountService.create( { email, password: hashedPassword, role } );
             switch ( role ) {
                 case 'customer':
-                    await CustomerService.create( { phone, address, name } );
+                    const Customer = await CustomerService.create( { phone, address, name } );
+                    const customerAccount = await AccountService.create( { email, password: hashedPassword, role, customer: Customer._id } );
+                    res.send( customerAccount );
                     break;
                 case 'restaurantOwner':
-                    await RestaurantOwnerService.create( { phone, address, name } );
+                    const RestaurantOwner = await RestaurantOwnerService.create( { phone, address, name } );
+                    const restaurantOwnerAccount = await AccountService.create( { email, password: hashedPassword, role, restaurantOwner: RestaurantOwner._id } );
+                    res.send( restaurantOwnerAccount );
                     break;
                 default:
                     break;
             }
-            res.send( account );
         } catch ( error ) {
             next( error )
         }
