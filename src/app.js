@@ -2,10 +2,13 @@ require( "dotenv" ).config();
 const express = require( "express" );
 // secure header
 const { default: helmet } = require( "helmet" );
+const cors = require( "cors" );
 // logger
 const morgan = require( "morgan" );
 
 const app = express();
+
+app.use( cors() );
 
 app.use( morgan( "dev" ) );
 app.use( helmet() );

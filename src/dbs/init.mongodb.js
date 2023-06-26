@@ -1,11 +1,10 @@
 "use strict";
 
 const mongoose = require( "mongoose" );
-// const {
-//   db: { host, name, port, Product },
-// } = require( "../configs/config.mongodb" );
-// const Product = require( "../configs/config.mongodb" ).db.Product;
-// const connectionString = `mongodb://${ host }:${ port }/${ name }`;
+const {
+  db: { host, name, port },
+} = require( "../configs/config.mongodb" );
+const connectionString = `mongodb://${ host }:${ port }/${ name }`;
 const ProductConnectionString = process.env.PRODUCT_DB;
 
 class Database {
