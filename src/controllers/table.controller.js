@@ -25,7 +25,8 @@ class TableController {
         res.send( await tableService.findTableByStatus( req.params.status ) );
     }
     createTable = async ( req, res, next ) => {
-        res.send( await tableService.create( req.body ) );
+        const restaurantId = req.params.restaurantId;
+        res.send( await tableService.create( ...req.body, { restaurantId } ) );
     };
     updateTable = async ( req, res, next ) => {
         res.send( await tableService.update( req.params.tableId, req.body ) );
