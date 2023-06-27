@@ -12,6 +12,16 @@ const restaurantSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        price: {
+            type: String,
+            default: "Contact for price"
+        },
+        description: {
+            type: String,
+        },
+        image: {
+            type: Array,
+        },
         restaurantOwner: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'RestaurantOwner',
