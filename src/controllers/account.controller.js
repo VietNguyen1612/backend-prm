@@ -92,7 +92,7 @@ class AccountController {
                 throw ErrorHandler( 400, "Invalid Credentials" );
             }
             const token = generateToken( account );
-            res.send( { token } );
+            res.send( { token, account } );
         } catch ( error ) {
             next( error );
         }

@@ -21,6 +21,7 @@ const restaurantSchema = new mongoose.Schema(
         },
         image: {
             type: Array,
+            default: []
         },
         restaurantOwner: {
             type: mongoose.Schema.Types.ObjectId,
