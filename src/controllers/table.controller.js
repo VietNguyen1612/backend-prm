@@ -34,6 +34,9 @@ class TableController {
     deleteTable = async ( req, res, next ) => {
         res.send( await tableService.delete( req.params.tableId ) );
     };
+    checkTableAvailability = async ( req, res, next ) => {
+        res.send( await tableService.checkTableAvailability( req.params.areaId, req.body ) );
+    }
 }
 
 module.exports = new TableController();

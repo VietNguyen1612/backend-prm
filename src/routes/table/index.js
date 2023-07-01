@@ -4,6 +4,7 @@ const express = require( 'express' );
 const router = express.Router();
 
 router.get( '/', TableController.getAllTables );
+router.get( '/availability/:areaId', TableController.checkTableAvailability );
 router.get( '/:tableId', TableController.getTable );
 router.get( '/tableNumber/:tableNumber', TableController.getTableByNumber );
 router.get( '/restaurantId/:restaurantId', TableController.getTableByRestaurantId );

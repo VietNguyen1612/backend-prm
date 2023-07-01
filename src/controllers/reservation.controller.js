@@ -25,18 +25,22 @@ class reservation {
     }
     createReservation = async ( req, res, next ) => {
         try {
-            const { tableId, customerId, restaurantId } = req.params;
-            const table = await TablesService.getById( tableId );
+            const { area, customerId, restaurantId } = req.params;
+            const table = await TablesService.findTableByArea( { area } );
+            let tableId;
+            //check if the first table in table array is available
+            for ( let i = 0; i < table.length; i++ ) {
+                if ( table[ i ].status === 'available' ) {
+                    tableId = table[ i ].id;
+                    break;
+                }
+            }
             const customer = await CustomersService.getById( customerId );
-            const restaurant = await RestaurantsService.getById( restaurantId );
-            const reservation = await ReservationsService.create( { ...req.body, tableId, customerId, restaurantId } );
-            // await sendEmail( {
-            //     to: customer.email,
-            //     subject: `Reservation Confirmation`,
-            //     text: `Dear ${ customer.name },\n\nYour reservation at ${ restaurant.name } has been confirmed.\n\nReservation Details:\n\nDate: ${ reservation.date }\nTime: ${ reservation.time }\nNumber of Guests: ${ reservation.guests }\n\nThank you for choosing ${ restaurant.name }!`
-            // } );
-            res.send( `Reservation created successfully! with id: ${ reservation.id }, for customer: ${ customer.name }, at restaurant: ${ restaurant.name }, at table: ${ table.name }` );
+            const reservation = await ReservationsService.create( { ...req.body, table: tableId, customer: customerId } );
+            await TablesService.update( tableId, { status: 'reserved' } );
             res.send( reservation );
+            console.log( 'customer', customer );
+            console.log( 'reservation', reservation );
         } catch ( error ) {
             next( error );
         }

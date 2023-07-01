@@ -20,6 +20,15 @@ class TableService extends BaseService {
     async findTableByStatus( status ) {
         return await this.model.find( { status } ).lean();
     }
+    async checkTableAvailability( areaId, { arriveDate, time } ) {
+        //check if the table is available at the time
+        const table = await this.model.findOne( { areaId, arriveDate, time } )
+            .populate( 'reservationId' )
+            .lean();
+        if ( table.status === 'available' ) {
+            return true;
+        }
+    }
 }
 
 module.exports = new TableService();
