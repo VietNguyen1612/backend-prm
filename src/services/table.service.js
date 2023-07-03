@@ -14,8 +14,8 @@ class TableService extends BaseService {
     async findTableByReservationId( reservationId ) {
         return await this.model.findOne( { reservationId } ).lean();
     }
-    async findTableByArea( area ) {
-        return await this.model.find( { area }, ).lean();
+    async findTableByAreaAndRestaurant( area, restaurantId ) {
+        return await this.model.find( { area,restaurantId }, ).lean();
     }
     async findTableByStatus( status ) {
         return await this.model.find( { status } ).lean();

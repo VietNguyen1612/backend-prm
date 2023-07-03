@@ -19,7 +19,7 @@ class TableController {
         res.send( await tableService.findTableByReservationId( req.params.reservationId ) );
     }
     getTableByArea = async ( req, res, next ) => {
-        res.send( await tableService.findTableByArea( req.params.area ) );
+        res.send( await tableService.findTableByAreaAndRestaurant( req.params.areaId, req.params.restaurantId ) );
     }
     getTableByStatus = async ( req, res, next ) => {
         res.send( await tableService.findTableByStatus( req.params.status ) );

@@ -29,7 +29,7 @@ class reservation {
             const getReservation = await ReservationsService.getAll();
             const isReserved = async (req) => {
                 for (const reservation of getReservation) {
-                    for (const table of await TablesService.findTableByArea(  req.body.area  )) {
+                    for (const table of await TablesService.findTableByAreaAndRestaurant(  req.body.area, req.body.restaurantId  )) {
                         if (
                             reservation.table === table._id &&
                             reservation.arrivedDate === req.body.arrivedDate &&
@@ -52,7 +52,6 @@ class reservation {
 
             //check after the reservation is created, 2 hours after the reserved time, the table will be available again
             console.log( 'customer', customer );
-            console.log( 'reservation', reservation );
         } catch ( error ) {
             next( error );
         }
