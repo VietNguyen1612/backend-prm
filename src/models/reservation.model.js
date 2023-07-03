@@ -14,20 +14,22 @@ const reservationSchema = new mongoose.Schema(
             ref: 'Table',
             required: true
         },
+        restaurant: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Restaurant',
+            required: true
+        },
         arrivedDate: {
             type: Date,
             required: true
         },
-        time: {
-            type: String,
-            required: true
-        },
         duration: {
-            type: Number,
+            type: String,
             required: true
         },
         status: {
             type: String,
+            enum: [ 'confirm', 'pending', 'cancelled' ],
             required: true
         },
         guessNum: {

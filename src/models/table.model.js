@@ -8,15 +8,12 @@ const tableSchema = new mongoose.Schema( {
         type: Number,
         required: true,
         unique: true,
+        autoIncrement: true
     },
     restaurantId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Restaurant'
-    },
-    status: {
-        type: String,
-        enum: [ 'available', 'unavailable', 'reserved' ],
-        default: 'available'
+        ref: 'Restaurant',
+        required: true
     },
     reservationId: {
         type: mongoose.Schema.Types.ObjectId,

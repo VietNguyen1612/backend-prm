@@ -25,20 +25,32 @@ class reservation {
     }
     createReservation = async ( req, res, next ) => {
         try {
-            const { area, customerId, restaurantId } = req.params;
-            const table = await TablesService.findTableByArea( { area } );
-            let tableId;
-            //check if the first table in table array is available
-            for ( let i = 0; i < table.length; i++ ) {
-                if ( table[ i ].status === 'available' ) {
-                    tableId = table[ i ].id;
-                    break;
+            const customerId = req.user.customerId;
+            const getReservation = await ReservationsService.getAll();
+            const isReserved = async (req) => {
+                for (const reservation of getReservation) {
+                    for (const table of await TablesService.findTableByArea(  req.body.area  )) {
+                        if (
+                            reservation.table === table._id &&
+                            reservation.arrivedDate === req.body.arrivedDate &&
+                            reservation.duration === req.body.duration
+                        ) {
+                            console.log('table is reserved')
+                            continue;
+                        } else{
+                            const reservation = await ReservationsService.create( { ...req.body, table: table._id, customer: customerId } );
+                            res.send( reservation );
+                            break;
+                        }
+                    }
                 }
-            }
-            const customer = await CustomersService.getById( customerId );
-            const reservation = await ReservationsService.create( { ...req.body, table: tableId, customer: customerId } );
-            await TablesService.update( tableId, { status: 'reserved' } );
-            res.send( reservation );
+            };
+            isReserved(req);
+            
+            //check if the first table in table array is available
+            // const reservation = await ReservationsService.create( { ...req.body, table: table._id, customer: customerId } );
+
+            //check after the reservation is created, 2 hours after the reserved time, the table will be available again
             console.log( 'customer', customer );
             console.log( 'reservation', reservation );
         } catch ( error ) {
