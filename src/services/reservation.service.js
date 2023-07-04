@@ -11,6 +11,12 @@ class ReservationsService extends BaseService {
     async findReservationByStatus( status ) {
         return await this.model.find( { status } ).lean();
     }
+    async findReservationByCustomerId( customerId ) {
+        return await this.model.find( { customer: customerId } ).lean();
+    }
+    async findReservationByTableId( tableId ) {
+        return await this.model.find( { table: tableId } ).lean();
+    }
     async findReservationByRestaurantId( restaurantId ) {
         return await this.model.find( { restaurant: restaurantId } ).lean();
     }

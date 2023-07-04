@@ -19,6 +19,11 @@ const accountSchema = new Schema( {
         enum: [ 'admin', 'customer', 'restaurantOwner' ],
         default: 'customer'
     },
+    status:{
+        type: String,
+        enum: [ 'active', 'baned' ],
+        default: 'active'
+    },
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer'

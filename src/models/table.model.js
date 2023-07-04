@@ -7,8 +7,6 @@ const tableSchema = new mongoose.Schema( {
     tableNumber: {
         type: Number,
         required: true,
-        unique: true,
-        autoIncrement: true
     },
     restaurantId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -21,6 +19,7 @@ const tableSchema = new mongoose.Schema( {
     },
     area: {
         type: String,
+        required: true
     },
 }
     , {

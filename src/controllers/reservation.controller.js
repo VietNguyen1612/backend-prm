@@ -1,5 +1,6 @@
 const ReservationsService = require( '../services/reservation.service' );
 const TablesService = require( '../services/table.service' );
+const FeedbackService = require( '../services/feedback.service' );
 const CustomersService = require( '../services/customer.service' );
 const RestaurantsService = require( '../services/restaurant.service' );
 const { sendEmail } = require( '../helpers/sendEmail' );
@@ -60,6 +61,16 @@ class reservation {
     }
     deleteReservation = async ( req, res, next ) => {
         res.send( await ReservationsService.deleteAll() );
+    }
+    createFeedback = async ( req, res, next ) => {
+        try {
+            const customerId = req.user.customer;
+            const reservationId = req.params.reservationId;
+            const feedback = await FeedbackService.create( { ...req.body, customerId, reservationId } );
+            res.send( feedback );
+        } catch ( error ) {
+            next( error );
+        }
     }
 
 }
