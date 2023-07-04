@@ -1,69 +1,69 @@
-const ReservationsService = require( '../services/reservation.service' );
-const TablesService = require( '../services/table.service' );
-const FeedbackService = require( '../services/feedback.service' );
-const CustomersService = require( '../services/customer.service' );
-const RestaurantsService = require( '../services/restaurant.service' );
-const { sendEmail } = require( '../helpers/sendEmail' );
+const ReservationsService = require('../services/reservation.service');
+const TablesService = require('../services/table.service');
+const FeedbackService = require('../services/feedback.service');
+const CustomersService = require('../services/customer.service');
+const RestaurantsService = require('../services/restaurant.service');
+const { sendEmail } = require('../helpers/sendEmail');
 
 class reservation {
-    getAllReservations = async ( req, res, next ) => {
-        res.send( await ReservationsService.getAll() );
+    getAllReservations = async (req, res, next) => {
+        res.send(await ReservationsService.getAll());
     }
-    getReservation = async ( req, res, next ) => {
-        res.send( await ReservationsService.getById( req.params.reservationId ) );
+    getReservation = async (req, res, next) => {
+        res.send(await ReservationsService.getById(req.params.reservationId));
     }
-    getReservationByCustomerId = async ( req, res, next ) => {
-        res.send( await ReservationsService.findReservationByCustomerId( req.params.customerId ) );
+    getReservationByCustomerId = async (req, res, next) => {
+        res.send(await ReservationsService.findReservationByCustomerId(req.params.customerId));
     }
-    getReservationByRestaurantId = async ( req, res, next ) => {
-        res.send( await ReservationsService.findReservationByRestaurantId( req.params.restaurantId ) );
+    getReservationByRestaurantId = async (req, res, next) => {
+        res.send(await ReservationsService.findReservationByRestaurantId(req.params.restaurantId));
     }
-    getReservationByTableId = async ( req, res, next ) => {
-        res.send( await ReservationsService.findReservationByTableId( req.params.tableId ) );
+    getReservationByTableId = async (req, res, next) => {
+        res.send(await ReservationsService.findReservationByTableId(req.params.tableId));
     }
-    getReservationByStatus = async ( req, res, next ) => {
-        res.send( await ReservationsService.findReservationByStatus( req.params.status ) );
+    getReservationByStatus = async (req, res, next) => {
+        res.send(await ReservationsService.findReservationByStatus(req.params.status));
     }
     createReservation = async (req, res, next) => {
         try {
-          const customerId = req.user.customer;
-          const restaurantId = req.body.restaurant;
-          const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
-          const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, restaurantId);
-          console.log('tables', tables)
+            const customerId = req.user.customer;
+            const restaurantId = req.body.restaurant;
+            const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
+            const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, restaurantId);
+            console.log('tables', tables)
             console.log('reservations', reservations)
-          const isTableReserved = (reservation, table) => {
-            switch(true){
-                case reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
-                    return true;
-                case reservation.table.equals(table._id) && reservation.date !== req.body.date && reservation.duration !== req.body.duration:
-                    return false;
-                case !reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
-                    return false;
+            const isTableReserved = (reservation, table) => {
+                switch (true) {
+                    case reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
+                        return true;
+                    case reservation.table.equals(table._id) && reservation.date !== req.body.date && reservation.duration !== req.body.duration:
+                        return false;
+                    case !reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
+                        return false;
+                }
             }
-          }
-          let i = 0
-          for (const table of tables) {
-            if (!reservations.some(reservation => isTableReserved(reservation, table))) {
-              const reservation = await ReservationsService.create({ ...req.body, table: table._id, customer: customerId, restaurant: restaurantId });
-              return res.send(reservation);
+            let i = 0
+            for (const table of tables) {
+                if (!reservations.some(reservation => isTableReserved(reservation, table))) {
+                    const reservation = await ReservationsService.create({ ...req.body, table: table._id, customer: customerId, restaurant: restaurantId });
+                    return res.send(reservation);
+                }
             }
-          }
-      
-          console.log('No table available');
-          res.send('No table available');
+
+            console.log('No table available');
+            res.status(400).send('No table available');
         } catch (error) {
-          next(error);
+            next(error);
         }
 
     }
-    updateReservation = async ( req, res, next ) => {
-        res.send( await ReservationsService.update( req.params.reservationId, req.body ) );
+    updateReservation = async (req, res, next) => {
+        res.send(await ReservationsService.update(req.params.reservationId, req.body));
     }
-    deleteReservation = async ( req, res, next ) => {
-        res.send( await ReservationsService.deleteAll() );
+    deleteReservation = async (req, res, next) => {
+        res.send(await ReservationsService.deleteAll());
     }
-    
+
 
 }
 
