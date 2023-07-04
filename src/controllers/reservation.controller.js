@@ -62,16 +62,7 @@ class reservation {
     deleteReservation = async ( req, res, next ) => {
         res.send( await ReservationsService.deleteAll() );
     }
-    createFeedback = async ( req, res, next ) => {
-        try {
-            const customerId = req.user.customer;
-            const reservationId = req.params.reservationId;
-            const feedback = await FeedbackService.create( { ...req.body, customerId, reservationId } );
-            res.send( feedback );
-        } catch ( error ) {
-            next( error );
-        }
-    }
+    
 
 }
 

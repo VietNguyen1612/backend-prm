@@ -1,12 +1,15 @@
 const RestaurantService = require( "../services/restaurant.service" );
 
 class RestaurantController {
-    getAllRestaurants = async ( req, res, next ) => {
-        res.send( await RestaurantService.getAll() );
 
+    getAllRestaurants = async ( req, res, next ) => {
+        const restaurants = await RestaurantService.getAll()
+        //check all restaurants status if it equal to "active" and return it
+        const activeRestaurants = restaurants.filter(restaurant => restaurant.status === "active")
+        res.send( activeRestaurants ); 
     };
     getRestaurant = async ( req, res, next ) => {
-        res.send( await RestaurantService.getById( req.params.restaurantId, "restaurantOwner" ) );
+        const restaurant = await RestaurantService.getById( req.params.restaurantId, "restaurantOwner" ) ;
     };
     getRestaurantByRestaurantOwnerId = async ( req, res, next ) => {
         const restaurantOwnerId = req.params.restaurantOwner;

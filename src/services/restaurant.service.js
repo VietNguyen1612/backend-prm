@@ -9,6 +9,9 @@ class RestaurantService extends BaseService {
     async findRestaurantByRestaurantOwnerId( restaurantOwner ) {
         return await this.model.find(  restaurantOwner ).lean();
     }
+    async deleteRestaurantByOwnerId( restaurantOwner ) {
+        return await this.model.deleteMany(  restaurantOwner ).lean();
+    }
 
 }
 

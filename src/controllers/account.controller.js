@@ -5,6 +5,8 @@ const { hashPassword, comparePassword } = require( "../helpers/passwordHash" );
 const { generateToken } = require( "../helpers/jwt" );
 const CustomerService = require( "../services/customer.service" );
 const RestaurantOwnerService = require( "../services/restaurantOwner.service" );
+const restaurantService = require("../services/restaurant.service");
+const TableService = require("../services/table.service");
 
 class AccountController {
     getAllAccounts = async ( req, res, next ) => {
@@ -110,6 +112,27 @@ class AccountController {
             }
             const token = generateToken( account );
             res.send( { token } );
+        } catch ( error ) {
+            next( error );
+        }
+    }
+    banAccount = async ( req, res, next ) => {
+        try {
+            const account = await AccountService.banAccount( req.params.accountId );
+            // remove restaurant and table if account is restaurant owner
+            if ( account.role === 'restaurantOwner' ) {
+                //get restaurants by restaurant owner id and change status to inactive
+                const restaurants = await restaurantService.findRestaurantByRestaurantOwnerId( { restaurantOwner: req.params.accountId } );
+                restaurants.forEach( async ( restaurant ) => {
+                    await restaurantService.update( restaurant._id, { status: 'inactive' } );
+                    // get tables by restaurant id and change status to inactive
+                    const tables = await TableService.findTableByRestaurantId( { restaurant: restaurant._id } );
+                    tables.forEach( async ( table ) => {
+                        await TableService.delete( table._id)
+                    } );
+                });
+            }
+            res.send( account );
         } catch ( error ) {
             next( error );
         }

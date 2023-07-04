@@ -19,6 +19,12 @@ const restaurantSchema = new mongoose.Schema(
         description: {
             type: String,
         },
+        status:{
+            type: String,
+            enum:['active','inactive'],
+            default:'active'
+        },
+
         image: {
             type: Array,
             default: []

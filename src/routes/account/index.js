@@ -13,5 +13,6 @@ router.post( "/login", asyncHandler( accountController.login ) );
 router.get( "/:accountId", authenticate, isOwner, asyncHandler( accountController.getAccount ) );
 router.delete( "/:accountId", asyncHandler( accountController.deleteAccount ) );
 router.patch( "/:accountId", asyncHandler( accountController.updateAccount ) );
+router.patch( "/ban/:accountId", authenticate, authorize( 'admin' ), asyncHandler( accountController.banAccount ) );
 
 module.exports = router;

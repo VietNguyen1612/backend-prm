@@ -29,6 +29,9 @@ class TableService extends BaseService {
             return true;
         }
     }
+    async deleteTableByRestaurantId( restaurantId ) {
+        return await this.model.deleteMany( { restaurantId } ).lean();
+    }
 }
 
 module.exports = new TableService();
