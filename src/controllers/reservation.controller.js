@@ -27,8 +27,9 @@ class reservation {
     createReservation = async (req, res, next) => {
         try {
           const customerId = req.user.customer;
-          const reservations = await ReservationsService.findReservationByRestaurantId(req.body.restaurantId);
-          const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, req.body.restaurantId);
+          const restaurantId = req.body.restaurant;
+          const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
+          const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, restaurantId);
           console.log('tables', tables)
             console.log('reservations', reservations)
           const isTableReserved = (reservation, table) => {
@@ -44,7 +45,7 @@ class reservation {
           let i = 0
           for (const table of tables) {
             if (!reservations.some(reservation => isTableReserved(reservation, table))) {
-              const reservation = await ReservationsService.create({ ...req.body, table: table._id, customer: customerId, restaurant: req.body.restaurantId });
+              const reservation = await ReservationsService.create({ ...req.body, table: table._id, customer: customerId, restaurant: restaurantId });
               return res.send(reservation);
             }
           }
@@ -69,7 +70,7 @@ class reservation {
 module.exports = new reservation();
 // {
 //     "area":"no smoking",
-//     "restaurantId":"649d45753aceac3847e06701",
+//     "restaurant":"649d45753aceac3847e06701",
 //     "arrivedDate":"2023-06-29",
 //     "duration":"8h-12h",
 //     "guessNum":4,
