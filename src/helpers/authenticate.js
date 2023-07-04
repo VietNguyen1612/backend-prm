@@ -38,6 +38,9 @@ const authenticate = ( req, res, next ) => {
         if ( !user ) {
             return res.status( 401 ).send( { message: 'Unauthorized' } );
         }
+        if(user.status === 'baned'){
+            return res.status( 401 ).send( { message: 'Your account has been banned' } );
+        }
         req.user = user;
         next();
     } )( req, res, next );
