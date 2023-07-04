@@ -9,8 +9,9 @@ class RestaurantController {
         res.send( await RestaurantService.getById( req.params.restaurantId, "restaurantOwner" ) );
     };
     getRestaurantByRestaurantOwnerId = async ( req, res, next ) => {
-        const restaurantOwnerId = req.user.restaurantOwner;
-        res.send( await RestaurantService.findRestaurantByRestaurantOwnerId( req.params.restaurantOwnerId ) );
+        const restaurantOwnerId = req.params.restaurantOwner;
+        console.log(req.user)
+        res.send( await RestaurantService.findRestaurantByRestaurantOwnerId( restaurantOwnerId ) );
     };
     createRestaurant = async ( req, res, next ) => {
         const restaurantOwnerId = req.user.restaurantOwner;

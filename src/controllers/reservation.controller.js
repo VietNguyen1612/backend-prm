@@ -23,37 +23,35 @@ class reservation {
     getReservationByStatus = async ( req, res, next ) => {
         res.send( await ReservationsService.findReservationByStatus( req.params.status ) );
     }
-    createReservation = async ( req, res, next ) => {
+    createReservation = async (req, res, next) => {
         try {
-            const customerId = req.user.customerId;
-            const getReservation = await ReservationsService.getAll();
-            const isReserved = async (req) => {
-                for (const reservation of getReservation) {
-                    for (const table of await TablesService.findTableByAreaAndRestaurant(  req.body.area, req.body.restaurantId  )) {
-                        if (
-                            reservation.table === table._id &&
-                            reservation.arrivedDate === req.body.arrivedDate &&
-                            reservation.duration === req.body.duration
-                        ) {
-                            console.log('table is reserved')
-                            continue;
-                        } else{
-                            const reservation = await ReservationsService.create( { ...req.body, table: table._id, customer: customerId } );
-                            res.send( reservation );
-                            break;
-                        }
-                    }
-                }
-            };
-            isReserved(req);
-            
-            //check if the first table in table array is available
-            // const reservation = await ReservationsService.create( { ...req.body, table: table._id, customer: customerId } );
-
-            //check after the reservation is created, 2 hours after the reserved time, the table will be available again
-            console.log( 'customer', customer );
-        } catch ( error ) {
-            next( error );
+          const customerId = req.user.customer;
+          const reservations = await ReservationsService.findReservationByRestaurantId(req.body.restaurantId);
+          const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, req.body.restaurantId);
+          console.log('tables', tables)
+            console.log('reservations', reservations)
+          const isTableReserved = (reservation, table) => {
+            switch(true){
+                case reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
+                    return true;
+                case reservation.table.equals(table._id) && reservation.date !== req.body.date && reservation.duration !== req.body.duration:
+                    return false;
+                case !reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
+                    return false;
+            }
+          }
+          let i = 0
+          for (const table of tables) {
+            if (!reservations.some(reservation => isTableReserved(reservation, table))) {
+              const reservation = await ReservationsService.create({ ...req.body, table: table._id, customer: customerId, restaurant: req.body.restaurantId });
+              return res.send(reservation);
+            }
+          }
+      
+          console.log('No table available');
+          res.send('No table available');
+        } catch (error) {
+          next(error);
         }
 
     }
@@ -61,9 +59,17 @@ class reservation {
         res.send( await ReservationsService.update( req.params.reservationId, req.body ) );
     }
     deleteReservation = async ( req, res, next ) => {
-        res.send( await ReservationsService.delete( req.params.reservationId ) );
+        res.send( await ReservationsService.deleteAll() );
     }
 
 }
 
 module.exports = new reservation();
+// {
+//     "area":"no smoking",
+//     "restaurantId":"649d45753aceac3847e06701",
+//     "arrivedDate":"2023-06-29",
+//     "duration":"8h-12h",
+//     "guessNum":4,
+//     "status":"pending"
+// }

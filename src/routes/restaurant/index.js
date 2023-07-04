@@ -12,7 +12,7 @@ const router = express.Router();
 router.get( "/", asyncHandler( restaurantController.getAllRestaurants ) );
 router.post( "/", authenticate, authorize( 'restaurantOwner' ), asyncHandler( restaurantController.createRestaurant ) );
 router.get( "/:restaurantId", asyncHandler( restaurantController.getRestaurant ) );
-router.get( "/restaurantOwner/:restaurantOwnerId", asyncHandler( restaurantController.getRestaurantByRestaurantOwnerId ) );
+router.get( "/restaurantOwner/:restaurantOwnerId",authenticate,authorize('restaurantOwner'), asyncHandler( restaurantController.getRestaurantByRestaurantOwnerId ) );
 router.delete(
     "/:restaurantId",
     asyncHandler( restaurantController.deleteRestaurant )

@@ -30,7 +30,8 @@ const reservationSchema = new mongoose.Schema(
         status: {
             type: String,
             enum: [ 'confirm', 'pending', 'cancelled' ],
-            required: true
+            required: true,
+            default: 'pending'
         },
         guessNum: {
             type: Number,

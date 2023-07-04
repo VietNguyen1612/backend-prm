@@ -6,8 +6,8 @@ class RestaurantService extends BaseService {
     constructor () {
         super( restaurantModel );
     }
-    async findRestaurantByRestaurantOwnerId( restaurantOwnerId ) {
-        return await this.model.find( { restaurantOwner: restaurantOwnerId } ).lean();
+    async findRestaurantByRestaurantOwnerId( restaurantOwner ) {
+        return await this.model.find(  restaurantOwner ).lean();
     }
 
 }
