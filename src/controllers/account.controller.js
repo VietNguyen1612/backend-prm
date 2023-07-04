@@ -126,10 +126,10 @@ class AccountController {
                 restaurants.forEach( async ( restaurant ) => {
                     await restaurantService.update( restaurant._id, { status: 'inactive' } );
                     // get tables by restaurant id and change status to inactive
-                    const tables = await TableService.findTableByRestaurantId( { restaurant: restaurant._id } );
-                    tables.forEach( async ( table ) => {
-                        await TableService.delete( table._id)
-                    } );
+                    // const tables = await TableService.findTableByRestaurantId( { restaurant: restaurant._id } );
+                    // tables.forEach( async ( table ) => {
+                    //     await TableService.delete( table._id)
+                    // } );
                 });
             }
             res.send( account );
