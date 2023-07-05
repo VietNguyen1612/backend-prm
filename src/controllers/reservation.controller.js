@@ -29,29 +29,35 @@ class reservation {
           const customerId = req.user.customer;
           const restaurantId = req.body.restaurant;
           const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
+          //check is restaurant is valid
+            const restaurant = await RestaurantsService.getById(restaurantId);
+            if (!restaurant) {
+                return res.status(400).send('Restaurant not found');
+            }
           const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, restaurantId);
-          console.log('tables', tables)
-            console.log('reservations', reservations)
+            if (!tables.length) {
+                return res.status(400).send('No table available');
+            }
           const isTableReserved = (reservation, table) => {
             switch(true){
                 case reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
-                    return true;
+                console.log("case 1")
+                return true;
                 case reservation.table.equals(table._id) && reservation.date !== req.body.date && reservation.duration !== req.body.duration:
-                    return false;
+                console.log("case 2")    
+                return false;
                 case !reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
-                    return false;
+                console.log("case 3")    
+                return false;
             }
           }
-          let i = 0
           for (const table of tables) {
             if (!reservations.some(reservation => isTableReserved(reservation, table))) {
               const reservation = await ReservationsService.create({ ...req.body, table: table._id, customer: customerId, restaurant: restaurantId });
               return res.send(reservation);
             }
           }
-      
-          console.log('No table available');
-          res.send('No table available');
+            return res.status(400).send('No table available');
         } catch (error) {
           next(error);
         }

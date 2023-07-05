@@ -7,9 +7,11 @@ class RestaurantController {
         //check all restaurants status if it equal to "active" and return it
         const activeRestaurants = restaurants.filter(restaurant => restaurant.status === "active")
         res.send( activeRestaurants ); 
+        // res.send( restaurants );
     };
     getRestaurant = async ( req, res, next ) => {
         const restaurant = await RestaurantService.getById( req.params.restaurantId, "restaurantOwner" ) ;
+        res.send( restaurant );
     };
     getRestaurantByRestaurantOwnerId = async ( req, res, next ) => {
         const restaurantOwnerId = req.params.restaurantOwner;
