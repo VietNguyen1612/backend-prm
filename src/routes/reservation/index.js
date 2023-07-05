@@ -3,6 +3,7 @@
 const express = require( "express" );
 const reservationController = require( "../../controllers/reservation.controller" );
 const asyncHandler = require( "../../helpers/asyncHandler.js" );
+const feedbackController = require( "../../controllers/feedback.controller" );
 const { authenticate, authorize } = require( "../../helpers/authenticate");
 const router = express.Router();
 
@@ -15,5 +16,8 @@ router.get( "/customer/:customerId", asyncHandler( reservationController.getRese
 router.get( "/restaurant/:restaurantId", asyncHandler( reservationController.getReservationByRestaurantId ) );
 router.get( "/table/:tableId", asyncHandler( reservationController.getReservationByTableId ) );
 router.get( "/status/:status", asyncHandler( reservationController.getReservationByStatus ) );
-
+router.post( "/:reservationId/feedback",authenticate, asyncHandler( feedbackController.createFeedback ) );
+router.get( "/:reservationId/feedback",authenticate, asyncHandler( feedbackController.getFeedbackFromReservationId ) );
+router.patch( "/:reservationId/feedback/:feedbackId",authenticate, asyncHandler( feedbackController.updateFeedback ) );
+router.delete( "/:reservationId/feedback/:feedbackId",authenticate, asyncHandler( feedbackController.deleteFeedback ) );
 module.exports = router;

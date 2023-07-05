@@ -1,4 +1,5 @@
 const FeedbackService = require( '../services/feedback.service' );
+const reservationService = require('../services/reservation.service');
 
 class feedback {
     getFeedbackFromReservationId = async ( req, res, next ) => {
@@ -14,7 +15,8 @@ class feedback {
             const customerId = req.user.customer;
             const reservationId = req.params.reservationId;
             const feedback = await FeedbackService.create( { ...req.body, customerId, reservationId } );
-            res.send( feedback );
+            await reservationService.update( reservationId, { status: 'completed', feedback: feedback._id } )
+            res.send(feedback);
         } catch ( error ) {
             next( error );
         }
@@ -30,6 +32,7 @@ class feedback {
     deleteFeedback = async ( req, res, next ) => {
         try {
             const feedback = await FeedbackService.delete( req.params.feedbackId );
+            await reservationService.update( req.params.reservationId, {$pull: {feedback: req.params.feedback} } )
             res.send( feedback );
         } catch ( error ) {
             next( error );

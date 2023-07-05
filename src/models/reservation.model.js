@@ -40,7 +40,14 @@ const reservationSchema = new mongoose.Schema(
         note: {
             type: String,
             required: false
-        }
+        },
+        feedback:[
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Feedback',
+                
+            }
+        ]
     },
     {
         collection: COLLECTION_NAME,

@@ -5,6 +5,10 @@ class FeedbackService extends BaseService {
     constructor() {
         super(feedbacksModel);
     }
+    findFeedbackByReservationId = async (reservationId) => {
+        const feedback = await feedbacksModel.find({ reservationId: reservationId });
+        return feedback;
+    }
 }
 
 module.exports = new FeedbackService();
