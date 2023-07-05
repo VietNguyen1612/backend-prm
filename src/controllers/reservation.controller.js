@@ -4,50 +4,89 @@ const FeedbackService = require('../services/feedback.service');
 const CustomersService = require('../services/customer.service');
 const RestaurantsService = require('../services/restaurant.service');
 const { sendEmail } = require('../helpers/sendEmail');
+const { ErrorHandler } = require('../helpers/errorHandler');
 
 class reservation {
     getAllReservations = async (req, res, next) => {
-        res.send(await ReservationsService.getAll());
-    }
-    getReservation = async (req, res, next) => {
-        res.send(await ReservationsService.getById(req.params.reservationId));
-    }
-    getReservationByCustomerId = async (req, res, next) => {
-        res.send(await ReservationsService.findReservationByCustomerId(req.params.customerId));
-    }
-    getReservationByRestaurantId = async (req, res, next) => {
-        res.send(await ReservationsService.findReservationByRestaurantId(req.params.restaurantId));
-    }
-    getReservationByTableId = async (req, res, next) => {
-        res.send(await ReservationsService.findReservationByTableId(req.params.tableId));
-    }
-    getReservationByStatus = async (req, res, next) => {
-        res.send(await ReservationsService.findReservationByStatus(req.params.status));
-    }
-    createReservation = async (req, res, next) => {
+        const reservations = await ReservationsService.getAll();
+        if (!reservations) {
+          throw ErrorHandler(404, 'No reservations found');
+        }
+        res.send(reservations);
+      }
+    
+      getReservation = async (req, res, next) => {
+        const reservation = await ReservationsService.getById(req.params.reservationId);
+        if (!reservation) {
+          throw ErrorHandler(404, 'Reservation not found');
+        }
+        res.send(reservation);
+      }
+    
+      getReservationByCustomerId = async (req, res, next) => {
+        const reservations = await ReservationsService.findReservationByCustomerId(req.params.customerId);
+        if (!reservations) {
+          throw ErrorHandler(404, 'No reservations found for this customer');
+        }
+        res.send(reservations);
+      }
+    
+      getReservationByRestaurantId = async (req, res, next) => {
+        const reservations = await ReservationsService.findReservationByRestaurantId(req.params.restaurantId);
+        if (!reservations) {
+          throw ErrorHandler(404, 'No reservations found for this restaurant');
+        }
+        res.send(reservations);
+      }
+    
+      getReservationByTableId = async (req, res, next) => {
+        const reservations = await ReservationsService.findReservationByTableId(req.params.tableId);
+        if (!reservations) {
+          throw ErrorHandler(404, 'No reservations found for this table');
+        }
+        res.send(reservations);
+      }
+    
+      getReservationByStatus = async (req, res, next) => {
+        const reservations = await ReservationsService.findReservationByStatus(req.params.status);
+        if (!reservations) {
+          throw ErrorHandler(404, 'No reservations found with this status');
+        }
+        res.send(reservations);
+      }
+    
+      createReservation = async (req, res, next) => {
         try {
           const customerId = req.user.customer;
           const restaurantId = req.body.restaurant;
           const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
-          //check is restaurant is valid
-            const restaurant = await RestaurantsService.getById(restaurantId);
-            if (!restaurant) {
-                return res.status(400).send('Restaurant not found');
-            }
+          //check if restaurant is valid
+          const restaurant = await RestaurantsService.getById(restaurantId);
+          if (!restaurant) {
+            throw ErrorHandler(404, 'Restaurant not found');
+          }
           const tables = await TablesService.findTableByAreaAndRestaurant(req.body.area, restaurantId);
-            if (!tables.length) {
-                return res.status(400).send('No table available');
-            }
+          if (!tables.length) {
+            throw ErrorHandler(404, 'No tables found');
+          }
+          const arrivedDate = new Date(req.body.arrivedDate);
           const isTableReserved = (reservation, table) => {
+            const reservationArrivedDate = new Date(reservation.arrivedDate);
             switch(true){
-                case reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
-                console.log("case 1")
+              case 
+              reservation.table.equals(table._id) && 
+              reservationArrivedDate.getTime() === arrivedDate.getTime() && 
+              reservation.duration === req.body.duration:
                 return true;
-                case reservation.table.equals(table._id) && reservation.date !== req.body.date && reservation.duration !== req.body.duration:
-                console.log("case 2")    
+              case 
+              reservation.table.equals(table._id) && 
+              reservationArrivedDate.getTime() !== arrivedDate.getTime() && 
+              reservation.duration !== req.body.duration:
                 return false;
-                case !reservation.table.equals(table._id) && reservation.date === req.body.date && reservation.duration === req.body.duration:
-                console.log("case 3")    
+              case 
+              !reservation.table.equals(table._id) 
+              && reservationArrivedDate.getTime() === arrivedDate.getTime()
+              && reservation.duration === req.body.duration:
                 return false;
             }
           }
@@ -57,21 +96,28 @@ class reservation {
               return res.send(reservation);
             }
           }
-            return res.status(400).send('No table available');
+          throw ErrorHandler(404, 'No tables found');
         } catch (error) {
-            next(error);
+          next(error);
         }
-
+      }
+    
+      updateReservation = async (req, res, next) => {
+        const reservation = await ReservationsService.update(req.params.reservationId, req.body);
+        if (!reservation) {
+          throw ErrorHandler(404, 'Reservation not found');
+        }
+        res.send(reservation);
+      }
+    
+      deleteReservation = async (req, res, next) => {
+        const result = await ReservationsService.deleteAll();
+        if (!result) {
+          throw ErrorHandler(404, 'No reservations found');
+        }
+        res.send(result);
+      }
     }
-    updateReservation = async (req, res, next) => {
-        res.send(await ReservationsService.update(req.params.reservationId, req.body));
-    }
-    deleteReservation = async (req, res, next) => {
-        res.send(await ReservationsService.deleteAll());
-    }
-
-
-}
 
 module.exports = new reservation();
 // {

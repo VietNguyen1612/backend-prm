@@ -1,3 +1,4 @@
+const { ErrorHandler } = require("../helpers/errorHandler");
 const RestaurantService = require( "../services/restaurant.service" );
 
 class RestaurantController {
@@ -6,11 +7,17 @@ class RestaurantController {
         const restaurants = await RestaurantService.getAll()
         //check all restaurants status if it equal to "active" and return it
         const activeRestaurants = restaurants.filter(restaurant => restaurant.status === "active")
+        if(!activeRestaurants.length){
+            throw ErrorHandler( 404, "No active restaurants found" );
+        }
         res.send( activeRestaurants ); 
         // res.send( restaurants );
     };
     getRestaurant = async ( req, res, next ) => {
         const restaurant = await RestaurantService.getById( req.params.restaurantId, "restaurantOwner" ) ;
+        if(!restaurant){
+            throw ErrorHandler( 404, "Restaurant not found" );
+        }
         res.send( restaurant );
     };
     getRestaurantByRestaurantOwnerId = async ( req, res, next ) => {
@@ -20,13 +27,25 @@ class RestaurantController {
     };
     createRestaurant = async ( req, res, next ) => {
         const restaurantOwnerId = req.user.restaurantOwner;
-        res.send( await RestaurantService.create( { ...req.body, restaurantOwner: restaurantOwnerId } ) );
+        const create = await RestaurantService.create( { ...req.body, restaurantOwner: restaurantOwnerId } ) ;
+        if(!create){
+            throw ErrorHandler( 404, "Restaurant not created" );
+        }
+        res.send( create );
     };
     updateRestaurant = async ( req, res, next ) => {
-        res.send( await RestaurantService.update( req.params.restaurantId, req.body ) );
+        const update = await RestaurantService.update( req.params.restaurantId, req.body ) ;
+        if(!update){
+            throw ErrorHandler( 404, "Restaurant not updated" );
+        }
+        res.send( update );
     };
     deleteRestaurant = async ( req, res, next ) => {
-        res.send( await RestaurantService.delete( req.params.restaurantId ) );
+        const deleteRestaurant = await RestaurantService.delete( req.params.restaurantId ) ;
+        if(!deleteRestaurant){
+            throw ErrorHandler( 404, "Restaurant not deleted" );
+        }
+        res.send( deleteRestaurant );
     };
 }
 
