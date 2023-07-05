@@ -20,7 +20,6 @@ const tableSchema = new mongoose.Schema( {
     area: {
         type: String,
         required: true,
-        enum: ['bên trong', 'bên ngoài','khu vực khác']
     },
 }
     , {
