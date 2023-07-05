@@ -32,7 +32,9 @@ class feedback {
     deleteFeedback = async ( req, res, next ) => {
         try {
             const feedback = await FeedbackService.delete( req.params.feedbackId );
-            await reservationService.update( req.params.reservationId, {$pull: {feedback: req.params.feedback} } )
+            const feedbackParam = req.params.feedbackId;
+            console.log(feedbackParam);
+            await reservationService.update( req.params.reservationId, {$pull: {feedback: feedbackParam} } )
             res.send( feedback );
         } catch ( error ) {
             next( error );
