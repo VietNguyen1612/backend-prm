@@ -17,7 +17,7 @@ class reservation {
       }
     
       getReservation = async (req, res, next) => {
-        const reservation = await ReservationsService.getById(req.params.reservationId);
+        const reservation = await ReservationsService.findById(req.params.reservationId);
         if (!reservation) {
           throw ErrorHandler(404, 'Reservation not found');
         }
