@@ -18,7 +18,12 @@ class ReservationsService extends BaseService {
         return await this.model.find( { table: tableId } ).lean();
     }
     async findReservationByRestaurantId( restaurantId ) {
-        return await this.model.find( { restaurant: restaurantId } ).lean();
+        return await this.model.find( { restaurant: restaurantId } )
+        .lean()
+        .populate('feedback')
+        .populate('table')
+        .populate('customer')
+        .populate('restaurant');
     }
     async deleteAll(){
         return await this.model.deleteMany();
