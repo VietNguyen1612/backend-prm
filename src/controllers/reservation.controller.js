@@ -5,10 +5,11 @@ const CustomersService = require('../services/customer.service');
 const RestaurantsService = require('../services/restaurant.service');
 const { sendEmail } = require('../helpers/sendEmail');
 const { ErrorHandler } = require('../helpers/errorHandler');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 class reservation {
     getAllReservations = async (req, res, next) => {
-        const reservations = await ReservationsService.getAll();
+        const reservations = await ReservationsService.getAllReservations()
         if (!reservations) {
           throw ErrorHandler(404, 'No reservations found');
         }
@@ -16,7 +17,7 @@ class reservation {
       }
     
       getReservation = async (req, res, next) => {
-        const reservation = await ReservationsService.getById(req.params.reservationId,'feedback')
+        const reservation = await ReservationsService.getById(req.params.reservationId);
         if (!reservation) {
           throw ErrorHandler(404, 'Reservation not found');
         }
@@ -36,7 +37,7 @@ class reservation {
         if (!reservations) {
           throw ErrorHandler(404, 'No reservations found for this restaurant');
         }
-        res.send(reservations);
+        res.status(200).send(reservations);
       }
     
       getReservationByTableId = async (req, res, next) => {
@@ -54,6 +55,24 @@ class reservation {
         }
         res.send(reservations);
       }
+
+      getReservationByRestaurantOwnerId = async (req, res, next) => {
+        const restaurantOwner = req.params.restaurantOwnerId;
+        const restaurants = await RestaurantsService.findRestaurantByRestaurantOwnerId({restaurantOwner: restaurantOwner});
+        if (!restaurants) {
+          throw ErrorHandler(404, 'No restaurants found for this owner');
+        }
+        for(const restaurant of restaurants){
+          const restaurantId = new ObjectId(restaurant._id);
+          const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
+          if (!reservations) {
+            throw ErrorHandler(404, 'No reservations found for this restaurant owner');
+          }
+          if(reservations.length > 0){
+            res.status(200).send(reservations);
+          }
+      }
+    }
     
       createReservation = async (req, res, next) => {
         try {

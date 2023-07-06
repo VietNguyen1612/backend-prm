@@ -23,6 +23,12 @@ class ReservationsService extends BaseService {
     async deleteAll(){
         return await this.model.deleteMany();
     }
+    async getAllReservations(){
+        return await this.model.find().lean().populate('feedback').populate('table').populate('customer').populate('restaurant');
+    }
+    async getById(id){
+        return await this.model.findById(id).lean().populate('feedback').populate('table').populate('customer').populate('restaurant');
+    }
 }
 
 module.exports = new ReservationsService();

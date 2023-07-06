@@ -13,6 +13,7 @@ class RestaurantService extends BaseService {
         return await this.model.deleteMany(  restaurantOwner ).lean();
     }
 
+
 }
 
 module.exports = new RestaurantService();

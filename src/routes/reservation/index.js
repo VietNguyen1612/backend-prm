@@ -14,6 +14,7 @@ router.delete( "/", asyncHandler( reservationController.deleteReservation ) );
 router.patch( "/:reservationId", asyncHandler( reservationController.updateReservation ) );
 router.get( "/customer/:customerId", asyncHandler( reservationController.getReservationByCustomerId ) );
 router.get( "/restaurant/:restaurantId", asyncHandler( reservationController.getReservationByRestaurantId ) );
+router.get("/restaurantOwner/:restaurantOwnerId", asyncHandler(reservationController.getReservationByRestaurantOwnerId));
 router.get( "/table/:tableId", asyncHandler( reservationController.getReservationByTableId ) );
 router.get( "/status/:status", asyncHandler( reservationController.getReservationByStatus ) );
 router.post( "/:reservationId/feedback",authenticate, asyncHandler( feedbackController.createFeedback ) );
