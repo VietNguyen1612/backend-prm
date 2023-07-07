@@ -13,6 +13,10 @@ class RestaurantController {
         res.send( activeRestaurants ); 
         // res.send( restaurants );
     };
+    getAllRestaurantsForAdmin = async ( req, res, next ) => {
+        const restaurants = await RestaurantService.getAll()
+        res.send( restaurants );
+    };
     getRestaurant = async ( req, res, next ) => {
         const restaurant = await RestaurantService.getById( req.params.restaurantId, "restaurantOwner" ) ;
         if(!restaurant){

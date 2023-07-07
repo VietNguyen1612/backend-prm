@@ -10,6 +10,7 @@ const asyncHandler = require( "../../helpers/asyncHandler.js" );
 const router = express.Router();
 
 router.get( "/", asyncHandler( restaurantController.getAllRestaurants ) );
+router.get( "/admin", authenticate, authorize( 'admin' ), asyncHandler( restaurantController.getAllRestaurantsForAdmin ));
 router.post( "/", authenticate, authorize( 'restaurantOwner' ), asyncHandler( restaurantController.createRestaurant ) );
 router.get( "/:restaurantId", asyncHandler( restaurantController.getRestaurant ) );
 router.get( "/restaurantOwner/:restaurantOwnerId",authenticate,authorize('restaurantOwner'), asyncHandler( restaurantController.getRestaurantByRestaurantOwnerId ) );
