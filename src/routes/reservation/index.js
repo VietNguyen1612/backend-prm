@@ -21,4 +21,6 @@ router.post( "/:reservationId/feedback",authenticate, asyncHandler( feedbackCont
 router.get( "/:reservationId/feedback",authenticate, asyncHandler( feedbackController.getFeedbackFromReservationId ) );
 router.patch( "/:reservationId/feedback/:feedbackId",authenticate, asyncHandler( feedbackController.updateFeedback ) );
 router.delete( "/:reservationId/feedback/:feedbackId",authenticate, asyncHandler( feedbackController.deleteFeedback ) );
+
+router.get( "/feedback/admin", authenticate, /*authorize( 'admin' ),*/ asyncHandler(feedbackController.getAllFeedbacks ) );
 module.exports = router;

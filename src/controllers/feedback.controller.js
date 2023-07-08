@@ -40,6 +40,16 @@ class feedback {
             next( error );
         }
     }
+    getAllFeedbacks = async ( req, res, next ) => {
+        try {
+            const feedbacks = await FeedbackService.getAll();
+            res.send( feedbacks );
+        } catch ( error ) {
+            next( error );
+        }
+    }
 }
+    
+
 
 module.exports = new feedback();
