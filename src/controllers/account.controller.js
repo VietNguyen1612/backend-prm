@@ -145,8 +145,8 @@ class AccountController {
                 restaurants.forEach( async ( restaurant ) => {
                     await restaurantService.update( restaurant._id, { status: 'active' } );
                 });
-            res.send( "account" + account._id + "is unbanned" );
             }
+            res.send( "account" + account._id + "is unbanned" );
         } catch ( error ) {
             next( error );
         }
