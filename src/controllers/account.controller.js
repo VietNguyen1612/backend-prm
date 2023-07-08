@@ -137,6 +137,20 @@ class AccountController {
             next( error );
         }
     }
+    unbanAccount = async ( req, res, next ) => {
+        try {
+            const account = await AccountService.unbanAccount( req.params.accountId );
+            if(account.role === 'restaurantOwner'){
+                const restaurants = await restaurantService.findRestaurantByRestaurantOwnerId( { restaurantOwner: req.params.accountId } );
+                restaurants.forEach( async ( restaurant ) => {
+                    await restaurantService.update( restaurant._id, { status: 'active' } );
+                });
+            res.send( "account" + account._id + "is unbanned" );
+            }
+        } catch ( error ) {
+            next( error );
+        }
+    }
 }
 
 

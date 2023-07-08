@@ -11,6 +11,9 @@ class AccountService extends BaseService {
     async banAccount( accountId ) {
         return await this.model.findOneAndUpdate( { _id: accountId }, {status:"baned"},  { new: true } ).lean();
     }
+    async unbanAccount( accountId ) {
+        return await this.model.findOneAndUpdate( { _id: accountId }, {status:"active"},  { new: true } ).lean();
+    }
 }
 
 module.exports = new AccountService();
