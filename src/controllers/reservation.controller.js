@@ -107,6 +107,9 @@ class reservation {
               && reservationArrivedDate.getTime() === arrivedDate.getTime()
               && reservation.duration === req.body.duration:
                 return false;
+              default:
+                return false;
+                
             }
           }
           for (const table of tables) {
