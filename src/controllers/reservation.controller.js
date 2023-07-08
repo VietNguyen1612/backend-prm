@@ -57,21 +57,23 @@ class reservation {
       }
 
       getReservationByRestaurantOwnerId = async (req, res, next) => {
-        const restaurantOwner = req.params.restaurantOwnerId;
-        const restaurants = await RestaurantsService.findRestaurantByRestaurantOwnerId({restaurantOwner: restaurantOwner});
-        if (!restaurants) {
-          throw ErrorHandler(404, 'No restaurants found for this owner');
+        try {
+          const restaurantOwner = req.params.restaurantOwnerId;
+          const restaurants = await RestaurantsService.findRestaurantByRestaurantOwnerId({ restaurantOwner });
+          if (!restaurants) {
+            throw ErrorHandler(404, 'No restaurants found for this owner');
+          }
+          const reservations = await Promise.all(restaurants.map(async restaurant => {
+            const restaurantId = new ObjectId(restaurant._id);
+            const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
+            return reservations;
+          }));
+          const flattenedReservations = reservations.flatMap(reservations => reservations);
+          const sortedReservations = flattenedReservations.sort((a, b) => a.arrivedDate - b.arrivedDate);
+          res.json(sortedReservations);
+        } catch (error) {
+          next(error);
         }
-        for(const restaurant of restaurants){
-          const restaurantId = new ObjectId(restaurant._id);
-          const reservations = await ReservationsService.findReservationByRestaurantId(restaurantId);
-          if (!reservations) {
-            throw ErrorHandler(404, 'No reservations found for this restaurant owner');
-          }
-          if(reservations.length > 0){
-            res.status(200).send(reservations);
-          }
-      }
     }
     
       createReservation = async (req, res, next) => {
@@ -105,9 +107,9 @@ class reservation {
               console.log("case 2")
                 return false;
               case 
-              !reservation.table === table._id
-              && reservationArrivedDate.getTime() === arrivedDate.getTime()
-              && reservation.duration === req.body.duration:
+              reservation.table !== table._id&& 
+              reservationArrivedDate.getTime() === arrivedDate.getTime()&& 
+              reservation.duration === req.body.duration:
               console.log("case 3")
                 return false;
               default:
