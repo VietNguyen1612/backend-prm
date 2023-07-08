@@ -93,23 +93,25 @@ class reservation {
             const reservationArrivedDate = new Date(reservation.arrivedDate);
             switch(true){
               case 
-              reservation.table.equals(table._id) && 
+              reservation.table === table._id && 
               reservationArrivedDate.getTime() === arrivedDate.getTime() && 
               reservation.duration === req.body.duration:
+              console.log("case 1")
                 return true;
               case 
-              reservation.table.equals(table._id) && 
+              reservation.table === table._id && 
               reservationArrivedDate.getTime() !== arrivedDate.getTime() && 
               reservation.duration !== req.body.duration:
+              console.log("case 2")
                 return false;
               case 
-              !reservation.table.equals(table._id) 
+              !reservation.table === table._id
               && reservationArrivedDate.getTime() === arrivedDate.getTime()
               && reservation.duration === req.body.duration:
+              console.log("case 3")
                 return false;
               default:
                 return false;
-                
             }
           }
           for (const table of tables) {
