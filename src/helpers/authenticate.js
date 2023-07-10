@@ -18,6 +18,9 @@ const jwtStrategy = new JwtStrategy( jwtOptions, async ( payload, done ) => {
         if ( !user ) {
             return done( null, false );
         }
+        if(user.status === 'baned'){
+            return done( null, false );
+        }
 
         // If the user is found, return it
         return done( null, user );

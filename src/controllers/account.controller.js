@@ -88,6 +88,9 @@ class AccountController {
             if ( !account ) {
                 throw ErrorHandler( 400, "Invalid Credentials" );
             }
+            if(account.status === 'baned'){
+                throw ErrorHandler( 400, "Account is baned please contact admin for more details" );
+            }
             const isMatch = await comparePassword
                 ( password, account.password );
             if ( !isMatch ) {
