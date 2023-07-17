@@ -48,6 +48,15 @@ class feedback {
             next( error );
         }
     }
+    getFeedbackByRestaurantId = async ( req, res, next ) => {
+        try {
+            const restaurantId = req.params.restaurantId;
+            const feedbacks = await FeedbackService.findFeedbackByRestaurantId( restaurantId );
+            res.send( feedbacks );
+        } catch ( error ) {
+            next( error );
+        }
+    }
 }
     
 

@@ -13,7 +13,7 @@ class reservation {
         if (!reservations) {
           throw ErrorHandler(404, 'No reservations found');
         }
-        res.send(reservations);
+        res.send(reservation);
       }
     
       getReservation = async (req, res, next) => {
@@ -26,9 +26,6 @@ class reservation {
     
       getReservationByCustomerId = async (req, res, next) => {
         const reservations = await ReservationsService.findReservationByCustomerId(req.params.customerId);
-        if (!reservations) {
-          throw ErrorHandler(404, 'No reservations found for this customer');
-        }
         res.send(reservations);
       }
     
