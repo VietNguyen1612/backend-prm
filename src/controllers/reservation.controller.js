@@ -56,7 +56,7 @@ class reservation {
       getReservationByRestaurantOwnerId = async (req, res, next) => {
         try {
           const restaurantOwner = req.params.restaurantOwnerId;
-          const restaurants = await RestaurantsService.findRestaurantByRestaurantOwnerId({ restaurantOwner });
+          const restaurants = await RestaurantsService.findRestaurantByRestaurantOwnerId( restaurantOwner );
           if (!restaurants) {
             throw ErrorHandler(404, 'No restaurants found for this owner');
           }
