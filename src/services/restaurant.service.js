@@ -6,7 +6,7 @@ class RestaurantService extends BaseService {
         super( restaurantModel );
     }
     async findRestaurantByRestaurantOwnerId( restaurantOwner ) {
-        const restaurant = await restaurantModel.find(restaurantOwner)
+        const restaurant = await restaurantModel.find({restaurantOwner:restaurantOwner}).lean()
         return restaurant;
     }
     async deleteRestaurantByOwnerId( restaurantOwner ) {

@@ -25,7 +25,8 @@ class RestaurantController {
         res.send( restaurant );
     };
     getRestaurantByRestaurantOwnerId = async ( req, res, next ) => {
-        const restaurantOwnerId = req.params.restaurantOwner;
+        const restaurantOwnerId = req.params.restaurantOwnerId;
+        console.log(restaurantOwnerId)
         res.send( await RestaurantService.findRestaurantByRestaurantOwnerId(restaurantOwnerId ) );
     };
     createRestaurant = async ( req, res, next ) => {
